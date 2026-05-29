@@ -78,14 +78,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "JPA" },
+      { name: "description", content: "RPG Hub Consultoria offers a platform for tabletop RPG enthusiasts, providing consulting services to aid Game Masters and players." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "JPA" },
+      { property: "og:description", content: "RPG Hub Consultoria offers a platform for tabletop RPG enthusiasts, providing consulting services to aid Game Masters and players." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "JPA" },
+      { name: "twitter:description", content: "RPG Hub Consultoria offers a platform for tabletop RPG enthusiasts, providing consulting services to aid Game Masters and players." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/67a65f3b-6dc2-49d1-bf4a-3aacf50af6de/id-preview-41a131eb--ad650818-0121-4829-8c75-5f1604c0fc73.lovable.app-1780075165024.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/67a65f3b-6dc2-49d1-bf4a-3aacf50af6de/id-preview-41a131eb--ad650818-0121-4829-8c75-5f1604c0fc73.lovable.app-1780075165024.png" },
     ],
     links: [
       {
