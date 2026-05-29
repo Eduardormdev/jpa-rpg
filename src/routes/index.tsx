@@ -2,10 +2,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ArrowRight, Dice6, ScrollText, Sparkles, Users, Map, Wand2 } from "lucide-react";
-import flame from "@/assets/jpa-flame.jpg";
-import mage from "@/assets/jpa-mage.jpg";
+import flame from "@/assets/brand-logo.png";
+import mage from "@/assets/ankin.png";
 import sheets from "@/assets/jpa-sheets.jpg";
-import master from "@/assets/jpa-master.jpg";
+import master from "@/assets/mestre-news.png";
 import homebrew from "@/assets/jpa-homebrew.jpg";
 
 export const Route = createFileRoute("/")({
