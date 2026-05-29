@@ -11,6 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrabalheConoscoRouteImport } from './routes/trabalhe-conosco'
 import { Route as SobreRouteImport } from './routes/sobre'
+import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
+import { Route as NovidadesRouteImport } from './routes/novidades'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as IndexRouteImport } from './routes/index'
 
@@ -22,6 +25,21 @@ const TrabalheConoscoRoute = TrabalheConoscoRouteImport.update({
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PoliticaDePrivacidadeRoute = PoliticaDePrivacidadeRouteImport.update({
+  id: '/politica-de-privacidade',
+  path: '/politica-de-privacidade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NovidadesRoute = NovidadesRouteImport.update({
+  id: '/novidades',
+  path: '/novidades',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContatoRoute = ContatoRouteImport.update({
@@ -38,12 +56,18 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
+  '/login': typeof LoginRoute
+  '/novidades': typeof NovidadesRoute
+  '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sobre': typeof SobreRoute
   '/trabalhe-conosco': typeof TrabalheConoscoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
+  '/login': typeof LoginRoute
+  '/novidades': typeof NovidadesRoute
+  '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sobre': typeof SobreRoute
   '/trabalhe-conosco': typeof TrabalheConoscoRoute
 }
@@ -51,20 +75,48 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/contato': typeof ContatoRoute
+  '/login': typeof LoginRoute
+  '/novidades': typeof NovidadesRoute
+  '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sobre': typeof SobreRoute
   '/trabalhe-conosco': typeof TrabalheConoscoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/contato' | '/sobre' | '/trabalhe-conosco'
+  fullPaths:
+    | '/'
+    | '/contato'
+    | '/login'
+    | '/novidades'
+    | '/politica-de-privacidade'
+    | '/sobre'
+    | '/trabalhe-conosco'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/contato' | '/sobre' | '/trabalhe-conosco'
-  id: '__root__' | '/' | '/contato' | '/sobre' | '/trabalhe-conosco'
+  to:
+    | '/'
+    | '/contato'
+    | '/login'
+    | '/novidades'
+    | '/politica-de-privacidade'
+    | '/sobre'
+    | '/trabalhe-conosco'
+  id:
+    | '__root__'
+    | '/'
+    | '/contato'
+    | '/login'
+    | '/novidades'
+    | '/politica-de-privacidade'
+    | '/sobre'
+    | '/trabalhe-conosco'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ContatoRoute: typeof ContatoRoute
+  LoginRoute: typeof LoginRoute
+  NovidadesRoute: typeof NovidadesRoute
+  PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
   SobreRoute: typeof SobreRoute
   TrabalheConoscoRoute: typeof TrabalheConoscoRoute
 }
@@ -83,6 +135,27 @@ declare module '@tanstack/react-router' {
       path: '/sobre'
       fullPath: '/sobre'
       preLoaderRoute: typeof SobreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/politica-de-privacidade': {
+      id: '/politica-de-privacidade'
+      path: '/politica-de-privacidade'
+      fullPath: '/politica-de-privacidade'
+      preLoaderRoute: typeof PoliticaDePrivacidadeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/novidades': {
+      id: '/novidades'
+      path: '/novidades'
+      fullPath: '/novidades'
+      preLoaderRoute: typeof NovidadesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contato': {
@@ -105,6 +178,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ContatoRoute: ContatoRoute,
+  LoginRoute: LoginRoute,
+  NovidadesRoute: NovidadesRoute,
+  PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
   SobreRoute: SobreRoute,
   TrabalheConoscoRoute: TrabalheConoscoRoute,
 }

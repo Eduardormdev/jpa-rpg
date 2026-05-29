@@ -1,12 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram, Youtube } from "lucide-react";
+import logoNome from "@/assets/brand-logo-nome.png";
 
 export function SiteFooter() {
   return (
     <footer className="bg-panel border-t border-border">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-12 md:grid-cols-3">
         <div>
-          <p className="font-display text-2xl tracking-widest">JPA — RPG</p>
+          <img src={logoNome} alt="JPA" className="h-24 w-auto" />
           <p className="mt-3 text-sm text-muted-foreground max-w-xs">
             O HUB definitivo para mestres e jogadores de RPG de mesa.
           </p>
@@ -22,9 +23,10 @@ export function SiteFooter() {
           <h4 className="font-display text-lg tracking-widest text-accent">Institucional</h4>
           <ul className="mt-4 space-y-2 text-sm">
             <li><Link to="/sobre" className="hover:text-accent">Sobre a JPA</Link></li>
+            <li><Link to="/novidades" className="hover:text-accent">Novidades</Link></li>
             <li><Link to="/trabalhe-conosco" className="hover:text-accent">Trabalhe Conosco</Link></li>
             <li><Link to="/contato" className="hover:text-accent">Contato</Link></li>
-            <li><a href="#" className="hover:text-accent">Apoiar</a></li>
+            <li><Link to="/politica-de-privacidade" className="hover:text-accent">Política de Privacidade</Link></li>
           </ul>
         </div>
         <div>
