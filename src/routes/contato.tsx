@@ -2,6 +2,16 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Mail, MapPin, Phone, Send } from "lucide-react";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { z } from "zod";
+
+const contactSchema = z.object({
+  name: z.string().trim().min(1).max(120),
+  email: z.string().trim().email().max(255),
+  message: z.string().trim().min(1).max(2000),
+});
 
 export const Route = createFileRoute("/contato")({
   head: () => ({
@@ -46,27 +56,50 @@ function Contato() {
               </div>
             ))}
           </div>
-          <form className="rounded-xl border border-border bg-card p-8 shadow-card space-y-5">
-            <div>
-              <label className="font-display tracking-widest text-sm">Nome</label>
-              <input type="text" className="mt-2 w-full rounded-md border border-border bg-input px-4 py-3 outline-none focus:border-accent" placeholder="Seu nome" />
-            </div>
-            <div>
-              <label className="font-display tracking-widest text-sm">E-mail</label>
-              <input type="email" className="mt-2 w-full rounded-md border border-border bg-input px-4 py-3 outline-none focus:border-accent" placeholder="voce@email.com" />
-            </div>
-            <div>
-              <label className="font-display tracking-widest text-sm">Mensagem</label>
-              <textarea rows={5} className="mt-2 w-full rounded-md border border-border bg-input px-4 py-3 outline-none focus:border-accent" placeholder="Conte sobre sua mesa..." />
-            </div>
-            <button type="button" className="inline-flex items-center gap-2 rounded-md bg-accent-gradient px-6 py-3 font-display tracking-widest text-primary-foreground shadow-glow hover:opacity-90 transition-opacity">
-              Enviar <Send className="h-4 w-4" />
-            </button>
-          </form>
+          <ContactForm />
         </div>
       </section>
 
       <SiteFooter />
     </div>
+  );
+}
+
+function ContactForm() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    const parsed = contactSchema.safeParse({ name, email, message });
+    if (!parsed.success) { toast.error("Verifique os campos."); return; }
+    setLoading(true);
+    const { error } = await supabase.from("contact_messages").insert({ name, email, message });
+    setLoading(false);
+    if (error) { toast.error("Erro ao enviar. Tente novamente."); return; }
+    toast.success("Mensagem enviada! Em breve entraremos em contato.");
+    setName(""); setEmail(""); setMessage("");
+  }
+
+  return (
+    <form onSubmit={submit} className="rounded-xl border border-border bg-card p-8 shadow-card space-y-5">
+      <div>
+        <label className="font-display tracking-widest text-sm">Nome</label>
+        <input type="text" value={name} onChange={(e) => setName(e.target.value)} required className="mt-2 w-full rounded-md border border-border bg-input px-4 py-3 outline-none focus:border-accent" placeholder="Seu nome" />
+      </div>
+      <div>
+        <label className="font-display tracking-widest text-sm">E-mail</label>
+        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required className="mt-2 w-full rounded-md border border-border bg-input px-4 py-3 outline-none focus:border-accent" placeholder="voce@email.com" />
+      </div>
+      <div>
+        <label className="font-display tracking-widest text-sm">Mensagem</label>
+        <textarea rows={5} value={message} onChange={(e) => setMessage(e.target.value)} required className="mt-2 w-full rounded-md border border-border bg-input px-4 py-3 outline-none focus:border-accent" placeholder="Conte sobre sua mesa..." />
+      </div>
+      <button type="submit" disabled={loading} className="inline-flex items-center gap-2 rounded-md bg-accent-gradient px-6 py-3 font-display tracking-widest text-primary-foreground shadow-glow hover:opacity-90 disabled:opacity-50">
+        {loading ? "Enviando..." : "Enviar"} <Send className="h-4 w-4" />
+      </button>
+    </form>
   );
 }

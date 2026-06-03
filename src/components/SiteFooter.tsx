@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram, Youtube } from "lucide-react";
 import logoNome from "@/assets/brand-logo-nome.png";
+import { NewsletterForm } from "@/components/NewsletterForm";
 
 export function SiteFooter() {
   return (
@@ -37,6 +38,15 @@ export function SiteFooter() {
             <li>jparpg@gmail.com</li>
             <li>(16) 99341-2323</li>
           </ul>
+        </div>
+      </div>
+      <div className="border-t border-border">
+        <div className="mx-auto max-w-7xl px-6 py-10 grid gap-6 md:grid-cols-2 items-center">
+          <div>
+            <h4 className="font-display text-xl tracking-widest text-accent">Receba novidades</h4>
+            <p className="mt-2 text-sm text-muted-foreground">Inscreva-se na newsletter e fique por dentro de lançamentos, eventos e conteúdos exclusivos.</p>
+          </div>
+          <NewsletterForm compact />
         </div>
       </div>
       <div className="border-t border-border py-5 text-center text-xs text-muted-foreground">
