@@ -12,6 +12,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { PrivacyConsent } from "@/components/PrivacyConsent";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -126,6 +128,8 @@ function RootComponent() {
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
       <PrivacyConsent />
+      <WhatsAppButton />
+      <Toaster />
     </QueryClientProvider>
   );
 }

@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { Heart } from "lucide-react";
 import logo from "@/assets/brand-logo.png";
 
 export function SiteHeader() {
@@ -17,6 +18,12 @@ export function SiteHeader() {
           <Link to="/trabalhe-conosco" className="hover:text-accent transition-colors">Trabalhe Conosco</Link>
         </nav>
         <div className="flex items-center gap-3">
+          <Link
+            to="/doe"
+            className="hidden md:inline-flex items-center gap-2 rounded-md bg-gradient-to-r from-purple-600 to-fuchsia-500 px-4 py-2 font-display tracking-widest text-sm text-white shadow-[0_0_18px_rgba(168,85,247,0.55)] hover:opacity-90 transition-opacity animate-pulse"
+          >
+            <Heart className="h-4 w-4 fill-current" /> Nos torne real
+          </Link>
           <Link to="/login" className="hidden sm:inline-flex rounded-md border border-border px-4 py-2 font-display tracking-widest text-sm hover:bg-secondary transition-colors">
             Cadastrar
           </Link>

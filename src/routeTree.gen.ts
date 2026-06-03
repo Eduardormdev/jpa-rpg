@@ -14,7 +14,9 @@ import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
 import { Route as NovidadesRouteImport } from './routes/novidades'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as DoeRouteImport } from './routes/doe'
 import { Route as ContatoRouteImport } from './routes/contato'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 
 const TrabalheConoscoRoute = TrabalheConoscoRouteImport.update({
@@ -42,9 +44,19 @@ const LoginRoute = LoginRouteImport.update({
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DoeRoute = DoeRouteImport.update({
+  id: '/doe',
+  path: '/doe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContatoRoute = ContatoRouteImport.update({
   id: '/contato',
   path: '/contato',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -55,7 +67,9 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/contato': typeof ContatoRoute
+  '/doe': typeof DoeRoute
   '/login': typeof LoginRoute
   '/novidades': typeof NovidadesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
@@ -64,7 +78,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/contato': typeof ContatoRoute
+  '/doe': typeof DoeRoute
   '/login': typeof LoginRoute
   '/novidades': typeof NovidadesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
@@ -74,7 +90,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
   '/contato': typeof ContatoRoute
+  '/doe': typeof DoeRoute
   '/login': typeof LoginRoute
   '/novidades': typeof NovidadesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
@@ -85,7 +103,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/contato'
+    | '/doe'
     | '/login'
     | '/novidades'
     | '/politica-de-privacidade'
@@ -94,7 +114,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin'
     | '/contato'
+    | '/doe'
     | '/login'
     | '/novidades'
     | '/politica-de-privacidade'
@@ -103,7 +125,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/contato'
+    | '/doe'
     | '/login'
     | '/novidades'
     | '/politica-de-privacidade'
@@ -113,7 +137,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
   ContatoRoute: typeof ContatoRoute
+  DoeRoute: typeof DoeRoute
   LoginRoute: typeof LoginRoute
   NovidadesRoute: typeof NovidadesRoute
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
@@ -158,11 +184,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/doe': {
+      id: '/doe'
+      path: '/doe'
+      fullPath: '/doe'
+      preLoaderRoute: typeof DoeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contato': {
       id: '/contato'
       path: '/contato'
       fullPath: '/contato'
       preLoaderRoute: typeof ContatoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -177,7 +217,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
   ContatoRoute: ContatoRoute,
+  DoeRoute: DoeRoute,
   LoginRoute: LoginRoute,
   NovidadesRoute: NovidadesRoute,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
