@@ -1,25 +1,12 @@
-import { createFileRoute, Link, useParams, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, ArrowLeft, Plus, Trash2, Upload, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-const BOOK_META: Record<string, { title: string }> = {
-  mestre: { title: "Livro do Mestre" },
-  jogador: { title: "Livro do Jogador" },
-  monstros: { title: "Livro dos Monstros" },
-};
-
 export const Route = createFileRoute("/nossas-historias/$book")({
   ssr: false,
-  head: ({ params }) => {
-    const meta = BOOK_META[params.book];
-    const title = meta ? `${meta.title} — HUB JPA` : "Livro — HUB JPA";
-    return { meta: [{ title }, { name: "description", content: "Folheie nossas histórias página por página." }] };
-  },
-  beforeLoad: ({ params }) => {
-    if (!BOOK_META[params.book]) throw notFound();
-  },
+  head: () => ({ meta: [{ title: "Livro — HUB JPA" }, { name: "description", content: "Folheie nossas histórias página por página." }] }),
   component: BookViewer,
   notFoundComponent: () => (
     <div className="min-h-screen grid place-items-center bg-hero text-center px-6">
@@ -43,7 +30,7 @@ type Page = { id: string; book: string; position: number; type: "image" | "pdf";
 
 function BookViewer() {
   const { book } = useParams({ from: "/nossas-historias/$book" });
-  const meta = BOOK_META[book];
+  const [bookTitle, setBookTitle] = useState<string>("Livro");
   const [pages, setPages] = useState<Page[]>([]);
   const [index, setIndex] = useState(0);
   const [flipping, setFlipping] = useState<"next" | "prev" | null>(null);
@@ -54,12 +41,12 @@ function BookViewer() {
 
   async function load() {
     setLoading(true);
+    const { data: bookRow } = await supabase.from("story_books").select("title").eq("slug", book).maybeSingle();
+    if (bookRow?.title) setBookTitle(bookRow.title);
     const { data } = await supabase.from("story_pages").select("*").eq("book", book).order("position", { ascending: true });
     const list = (data ?? []) as Page[];
-    // sign urls
     for (const p of list) {
-      const path = p.url;
-      const { data: signed } = await supabase.storage.from("story-pages").createSignedUrl(path, 60 * 60 * 6);
+      const { data: signed } = await supabase.storage.from("story-pages").createSignedUrl(p.url, 60 * 60 * 6);
       p._signed = signed?.signedUrl ?? "";
     }
     setPages(list);
@@ -131,7 +118,7 @@ function BookViewer() {
         <Link to="/nossas-historias" className="inline-flex items-center gap-2 font-display tracking-widest text-sm hover:text-accent">
           <ArrowLeft className="h-4 w-4" /> Biblioteca
         </Link>
-        <h1 className="font-display text-xl md:text-2xl tracking-widest text-glow">{meta.title}</h1>
+        <h1 className="font-display text-xl md:text-2xl tracking-widest text-glow">{bookTitle}</h1>
         <div className="w-24 text-right text-xs text-muted-foreground">
           {pages.length > 0 ? `${index + 1} / ${pages.length}` : ""}
         </div>
