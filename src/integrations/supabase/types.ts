@@ -119,6 +119,42 @@ export type Database = {
         }
         Relationships: []
       }
+      story_books: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          position: number
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          position?: number
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          position?: number
+          slug?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       story_pages: {
         Row: {
           book: string
