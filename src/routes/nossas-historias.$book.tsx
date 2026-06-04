@@ -41,12 +41,12 @@ function BookViewer() {
 
   async function load() {
     setLoading(true);
+    const { data: bookRow } = await supabase.from("story_books").select("title").eq("slug", book).maybeSingle();
+    if (bookRow?.title) setBookTitle(bookRow.title);
     const { data } = await supabase.from("story_pages").select("*").eq("book", book).order("position", { ascending: true });
     const list = (data ?? []) as Page[];
-    // sign urls
     for (const p of list) {
-      const path = p.url;
-      const { data: signed } = await supabase.storage.from("story-pages").createSignedUrl(path, 60 * 60 * 6);
+      const { data: signed } = await supabase.storage.from("story-pages").createSignedUrl(p.url, 60 * 60 * 6);
       p._signed = signed?.signedUrl ?? "";
     }
     setPages(list);
