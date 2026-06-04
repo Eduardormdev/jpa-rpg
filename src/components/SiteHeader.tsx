@@ -13,9 +13,10 @@ export function SiteHeader() {
         <nav className="hidden md:flex items-center gap-7 font-display text-sm tracking-widest">
           <Link to="/" className="hover:text-accent transition-colors">Início</Link>
           <Link to="/novidades" className="hover:text-accent transition-colors">Novidades</Link>
+          <Link to="/nossas-historias" className="hover:text-accent transition-colors">Histórias</Link>
           <Link to="/sobre" className="hover:text-accent transition-colors">Sobre</Link>
           <Link to="/contato" className="hover:text-accent transition-colors">Contato</Link>
-          <Link to="/trabalhe-conosco" className="hover:text-accent transition-colors">Trabalhe Conosco</Link>
+          <Link to="/trabalhe-conosco" className="hover:text-accent transition-colors">Trabalhe</Link>
         </nav>
         <div className="flex items-center gap-3">
           <Link
