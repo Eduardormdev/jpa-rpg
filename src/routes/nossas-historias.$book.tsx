@@ -1,25 +1,12 @@
-import { createFileRoute, Link, useParams, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, ArrowLeft, Plus, Trash2, Upload, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-const BOOK_META: Record<string, { title: string }> = {
-  mestre: { title: "Livro do Mestre" },
-  jogador: { title: "Livro do Jogador" },
-  monstros: { title: "Livro dos Monstros" },
-};
-
 export const Route = createFileRoute("/nossas-historias/$book")({
   ssr: false,
-  head: ({ params }) => {
-    const meta = BOOK_META[params.book];
-    const title = meta ? `${meta.title} — HUB JPA` : "Livro — HUB JPA";
-    return { meta: [{ title }, { name: "description", content: "Folheie nossas histórias página por página." }] };
-  },
-  beforeLoad: ({ params }) => {
-    if (!BOOK_META[params.book]) throw notFound();
-  },
+  head: () => ({ meta: [{ title: "Livro — HUB JPA" }, { name: "description", content: "Folheie nossas histórias página por página." }] }),
   component: BookViewer,
   notFoundComponent: () => (
     <div className="min-h-screen grid place-items-center bg-hero text-center px-6">
@@ -43,7 +30,7 @@ type Page = { id: string; book: string; position: number; type: "image" | "pdf";
 
 function BookViewer() {
   const { book } = useParams({ from: "/nossas-historias/$book" });
-  const meta = BOOK_META[book];
+  const [bookTitle, setBookTitle] = useState<string>("Livro");
   const [pages, setPages] = useState<Page[]>([]);
   const [index, setIndex] = useState(0);
   const [flipping, setFlipping] = useState<"next" | "prev" | null>(null);
