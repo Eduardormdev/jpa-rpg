@@ -119,6 +119,39 @@ export type Database = {
         }
         Relationships: []
       }
+      story_pages: {
+        Row: {
+          book: string
+          created_at: string
+          id: string
+          position: number
+          title: string | null
+          type: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          book: string
+          created_at?: string
+          id?: string
+          position?: number
+          title?: string | null
+          type: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          book?: string
+          created_at?: string
+          id?: string
+          position?: number
+          title?: string | null
+          type?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string

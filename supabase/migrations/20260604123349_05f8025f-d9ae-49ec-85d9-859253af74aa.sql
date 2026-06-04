@@ -1,0 +1,4 @@
+CREATE POLICY "Public read story-pages" ON storage.objects FOR SELECT TO anon, authenticated USING (bucket_id = 'story-pages');
+CREATE POLICY "Admins upload story-pages" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'story-pages' AND has_role(auth.uid(),'admin'::app_role));
+CREATE POLICY "Admins update story-pages" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id = 'story-pages' AND has_role(auth.uid(),'admin'::app_role));
+CREATE POLICY "Admins delete story-pages" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'story-pages' AND has_role(auth.uid(),'admin'::app_role));
