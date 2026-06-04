@@ -118,7 +118,7 @@ function BookViewer() {
         <Link to="/nossas-historias" className="inline-flex items-center gap-2 font-display tracking-widest text-sm hover:text-accent">
           <ArrowLeft className="h-4 w-4" /> Biblioteca
         </Link>
-        <h1 className="font-display text-xl md:text-2xl tracking-widest text-glow">{meta.title}</h1>
+        <h1 className="font-display text-xl md:text-2xl tracking-widest text-glow">{bookTitle}</h1>
         <div className="w-24 text-right text-xs text-muted-foreground">
           {pages.length > 0 ? `${index + 1} / ${pages.length}` : ""}
         </div>
