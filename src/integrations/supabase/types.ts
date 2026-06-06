@@ -121,6 +121,7 @@ export type Database = {
       }
       story_books: {
         Row: {
+          categories: string[]
           cover_url: string | null
           created_at: string
           description: string
@@ -128,10 +129,12 @@ export type Database = {
           id: string
           position: number
           slug: string
+          summary: string
           title: string
           updated_at: string
         }
         Insert: {
+          categories?: string[]
           cover_url?: string | null
           created_at?: string
           description?: string
@@ -139,10 +142,12 @@ export type Database = {
           id?: string
           position?: number
           slug: string
+          summary?: string
           title: string
           updated_at?: string
         }
         Update: {
+          categories?: string[]
           cover_url?: string | null
           created_at?: string
           description?: string
@@ -150,6 +155,7 @@ export type Database = {
           id?: string
           position?: number
           slug?: string
+          summary?: string
           title?: string
           updated_at?: string
         }
@@ -158,6 +164,7 @@ export type Database = {
       story_pages: {
         Row: {
           book: string
+          category: string | null
           created_at: string
           id: string
           position: number
@@ -168,6 +175,7 @@ export type Database = {
         }
         Insert: {
           book: string
+          category?: string | null
           created_at?: string
           id?: string
           position?: number
@@ -178,6 +186,7 @@ export type Database = {
         }
         Update: {
           book?: string
+          category?: string | null
           created_at?: string
           id?: string
           position?: number
