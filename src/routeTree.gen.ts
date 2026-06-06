@@ -17,6 +17,7 @@ import { Route as NossasHistoriasRouteImport } from './routes/nossas-historias'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DoeRouteImport } from './routes/doe'
 import { Route as ContatoRouteImport } from './routes/contato'
+import { Route as ContaRouteImport } from './routes/conta'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NossasHistoriasBookRouteImport } from './routes/nossas-historias.$book'
@@ -61,6 +62,11 @@ const ContatoRoute = ContatoRouteImport.update({
   path: '/contato',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContaRoute = ContaRouteImport.update({
+  id: '/conta',
+  path: '/conta',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -80,6 +86,7 @@ const NossasHistoriasBookRoute = NossasHistoriasBookRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/conta': typeof ContaRoute
   '/contato': typeof ContatoRoute
   '/doe': typeof DoeRoute
   '/login': typeof LoginRoute
@@ -93,6 +100,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/conta': typeof ContaRoute
   '/contato': typeof ContatoRoute
   '/doe': typeof DoeRoute
   '/login': typeof LoginRoute
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/conta': typeof ContaRoute
   '/contato': typeof ContatoRoute
   '/doe': typeof DoeRoute
   '/login': typeof LoginRoute
@@ -122,6 +131,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/conta'
     | '/contato'
     | '/doe'
     | '/login'
@@ -135,6 +145,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/admin'
+    | '/conta'
     | '/contato'
     | '/doe'
     | '/login'
@@ -148,6 +159,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/conta'
     | '/contato'
     | '/doe'
     | '/login'
@@ -162,6 +174,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  ContaRoute: typeof ContaRoute
   ContatoRoute: typeof ContatoRoute
   DoeRoute: typeof DoeRoute
   LoginRoute: typeof LoginRoute
@@ -230,6 +243,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContatoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/conta': {
+      id: '/conta'
+      path: '/conta'
+      fullPath: '/conta'
+      preLoaderRoute: typeof ContaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -269,6 +289,7 @@ const NossasHistoriasRouteWithChildren = NossasHistoriasRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  ContaRoute: ContaRoute,
   ContatoRoute: ContatoRoute,
   DoeRoute: DoeRoute,
   LoginRoute: LoginRoute,
