@@ -13,6 +13,7 @@ import { Route as TrabalheConoscoRouteImport } from './routes/trabalhe-conosco'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-privacidade'
 import { Route as NovidadesRouteImport } from './routes/novidades'
+import { Route as NossasHistoriasRouteImport } from './routes/nossas-historias'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DoeRouteImport } from './routes/doe'
 import { Route as ContatoRouteImport } from './routes/contato'
@@ -40,6 +41,11 @@ const PoliticaDePrivacidadeRoute = PoliticaDePrivacidadeRouteImport.update({
 const NovidadesRoute = NovidadesRouteImport.update({
   id: '/novidades',
   path: '/novidades',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NossasHistoriasRoute = NossasHistoriasRouteImport.update({
+  id: '/nossas-historias',
+  path: '/nossas-historias',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -73,9 +79,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const NossasHistoriasIndexRoute = NossasHistoriasIndexRouteImport.update({
-  id: '/nossas-historias/',
-  path: '/nossas-historias/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => NossasHistoriasRoute,
 } as any)
 const NossasHistoriasBookRoute = NossasHistoriasBookRouteImport.update({
   id: '/$book',
@@ -90,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/contato': typeof ContatoRoute
   '/doe': typeof DoeRoute
   '/login': typeof LoginRoute
+  '/nossas-historias': typeof NossasHistoriasRouteWithChildren
   '/novidades': typeof NovidadesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sobre': typeof SobreRoute
@@ -119,6 +126,7 @@ export interface FileRoutesById {
   '/contato': typeof ContatoRoute
   '/doe': typeof DoeRoute
   '/login': typeof LoginRoute
+  '/nossas-historias': typeof NossasHistoriasRouteWithChildren
   '/novidades': typeof NovidadesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sobre': typeof SobreRoute
@@ -135,6 +143,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/doe'
     | '/login'
+    | '/nossas-historias'
     | '/novidades'
     | '/politica-de-privacidade'
     | '/sobre'
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/contato'
     | '/doe'
     | '/login'
+    | '/nossas-historias'
     | '/novidades'
     | '/politica-de-privacidade'
     | '/sobre'
@@ -178,11 +188,11 @@ export interface RootRouteChildren {
   ContatoRoute: typeof ContatoRoute
   DoeRoute: typeof DoeRoute
   LoginRoute: typeof LoginRoute
+  NossasHistoriasRoute: typeof NossasHistoriasRouteWithChildren
   NovidadesRoute: typeof NovidadesRoute
   PoliticaDePrivacidadeRoute: typeof PoliticaDePrivacidadeRoute
   SobreRoute: typeof SobreRoute
   TrabalheConoscoRoute: typeof TrabalheConoscoRoute
-  NossasHistoriasIndexRoute: typeof NossasHistoriasIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -213,6 +223,13 @@ declare module '@tanstack/react-router' {
       path: '/novidades'
       fullPath: '/novidades'
       preLoaderRoute: typeof NovidadesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nossas-historias': {
+      id: '/nossas-historias'
+      path: '/nossas-historias'
+      fullPath: '/nossas-historias'
+      preLoaderRoute: typeof NossasHistoriasRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -259,10 +276,10 @@ declare module '@tanstack/react-router' {
     }
     '/nossas-historias/': {
       id: '/nossas-historias/'
-      path: '/nossas-historias'
+      path: '/'
       fullPath: '/nossas-historias/'
       preLoaderRoute: typeof NossasHistoriasIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof NossasHistoriasRoute
     }
     '/nossas-historias/$book': {
       id: '/nossas-historias/$book'
@@ -274,6 +291,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface NossasHistoriasRouteChildren {
+  NossasHistoriasBookRoute: typeof NossasHistoriasBookRoute
+  NossasHistoriasIndexRoute: typeof NossasHistoriasIndexRoute
+}
+
+const NossasHistoriasRouteChildren: NossasHistoriasRouteChildren = {
+  NossasHistoriasBookRoute: NossasHistoriasBookRoute,
+  NossasHistoriasIndexRoute: NossasHistoriasIndexRoute,
+}
+
+const NossasHistoriasRouteWithChildren = NossasHistoriasRoute._addFileChildren(
+  NossasHistoriasRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
@@ -281,11 +312,11 @@ const rootRouteChildren: RootRouteChildren = {
   ContatoRoute: ContatoRoute,
   DoeRoute: DoeRoute,
   LoginRoute: LoginRoute,
+  NossasHistoriasRoute: NossasHistoriasRouteWithChildren,
   NovidadesRoute: NovidadesRoute,
   PoliticaDePrivacidadeRoute: PoliticaDePrivacidadeRoute,
   SobreRoute: SobreRoute,
   TrabalheConoscoRoute: TrabalheConoscoRoute,
-  NossasHistoriasIndexRoute: NossasHistoriasIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
