@@ -6,7 +6,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/nossas-historias")({
+export const Route = createFileRoute("/nossas-historias/")({
   ssr: false,
   head: () => ({
     meta: [
