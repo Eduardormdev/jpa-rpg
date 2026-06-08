@@ -156,7 +156,7 @@ function BookViewer() {
     const s = step();
     const next = dir === "next" ? index + s : index - s;
     if (next < 0 || next >= pages.length) return;
-    if (prefs.flip && prefs.layout !== "scroll-v" && prefs.layout !== "scroll-h") {
+    if (prefs.flip) {
       setFlipping(dir);
       setTimeout(() => { setIndex(next); setFlipping(null); }, 500);
     } else {
