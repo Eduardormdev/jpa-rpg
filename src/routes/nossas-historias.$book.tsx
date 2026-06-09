@@ -322,10 +322,11 @@ function BookViewer() {
                 <button
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading}
-                  className="absolute bottom-3 right-3 z-10 grid h-12 w-12 place-items-center rounded-full bg-accent text-primary-foreground shadow-glow hover:opacity-90 disabled:opacity-50"
+                  className="absolute bottom-3 right-3 z-20 grid h-14 w-14 place-items-center rounded-full bg-emerald-500 text-white border-2 border-white shadow-2xl ring-2 ring-emerald-700/40 hover:bg-emerald-600 disabled:opacity-50"
                   title="Adicionar nova folha"
+                  aria-label="Adicionar nova folha"
                 >
-                  {uploading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-6 w-6" />}
+                  {uploading ? <Loader2 className="h-6 w-6 animate-spin" /> : <Plus className="h-7 w-7" strokeWidth={3} />}
                 </button>
               )}
             </div>
@@ -413,10 +414,11 @@ function PagePanel({
           {isAdmin && (
             <button
               onClick={onRemove}
-              className="absolute top-2 right-2 grid h-8 w-8 place-items-center rounded-full bg-destructive/90 text-destructive-foreground opacity-0 hover:opacity-100 group-hover:opacity-100 transition-opacity"
+              className="absolute top-2 right-2 z-20 grid h-10 w-10 place-items-center rounded-full bg-white text-red-600 border-2 border-red-600 shadow-lg ring-2 ring-white/80 hover:bg-red-600 hover:text-white transition-colors"
               title="Remover folha"
+              aria-label="Remover folha"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-5 w-5" strokeWidth={2.5} />
             </button>
           )}
         </>
