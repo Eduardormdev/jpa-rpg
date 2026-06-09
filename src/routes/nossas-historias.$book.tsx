@@ -249,7 +249,10 @@ function BookViewer() {
             <IconBtn onClick={() => setShowPrefs(true)} title="Preferências de leitura"><BookOpen className="h-4 w-4" /></IconBtn>
             <IconBtn onClick={toggleFullscreen} title="Tela cheia">{fullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}</IconBtn>
             {isAdmin && (
-              <IconBtn onClick={() => setShowSettings(true)} title="Configurações do livro"><Settings className="h-4 w-4" /></IconBtn>
+              <>
+                <IconBtn onClick={() => setShowStructure(true)} title="Estrutura (capítulos e ordem)"><ListTree className="h-4 w-4" /></IconBtn>
+                <IconBtn onClick={() => setShowSettings(true)} title="Configurações do livro"><Settings className="h-4 w-4" /></IconBtn>
+              </>
             )}
             {prefs.showNumbers && (
               <div className="hidden md:block ml-2 w-20 text-right text-xs text-white/70">
