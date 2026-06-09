@@ -2,10 +2,11 @@ import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ChevronLeft, ChevronRight, ArrowLeft, Plus, Trash2, Upload, Loader2,
-  Settings, X, ListOrdered, Maximize2, Minimize2, ZoomIn, ZoomOut, BookOpen,
+  Settings, X, ListOrdered, Maximize2, Minimize2, ZoomIn, ZoomOut, BookOpen, ListTree,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { StructurePanel } from "@/components/book/StructurePanel";
 
 export const Route = createFileRoute("/nossas-historias/$book")({
   ssr: false,
