@@ -161,13 +161,93 @@ export type Database = {
         }
         Relationships: []
       }
+      story_chapters: {
+        Row: {
+          book: string
+          created_at: string
+          id: string
+          kind: string
+          parent_id: string | null
+          position: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          book: string
+          created_at?: string
+          id?: string
+          kind?: string
+          parent_id?: string | null
+          position?: number
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          book?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          parent_id?: string | null
+          position?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_chapters_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "story_chapters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      story_page_versions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          label: string | null
+          page_id: string
+          snapshot: Json
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          label?: string | null
+          page_id: string
+          snapshot: Json
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          label?: string | null
+          page_id?: string
+          snapshot?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_page_versions_page_id_fkey"
+            columns: ["page_id"]
+            isOneToOne: false
+            referencedRelation: "story_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       story_pages: {
         Row: {
           book: string
           category: string | null
+          chapter_id: string | null
           created_at: string
           id: string
+          is_locked: boolean
           position: number
+          slug: string | null
+          status: string
           title: string | null
           type: string
           updated_at: string
@@ -176,9 +256,13 @@ export type Database = {
         Insert: {
           book: string
           category?: string | null
+          chapter_id?: string | null
           created_at?: string
           id?: string
+          is_locked?: boolean
           position?: number
+          slug?: string | null
+          status?: string
           title?: string | null
           type: string
           updated_at?: string
@@ -187,15 +271,27 @@ export type Database = {
         Update: {
           book?: string
           category?: string | null
+          chapter_id?: string | null
           created_at?: string
           id?: string
+          is_locked?: boolean
           position?: number
+          slug?: string | null
+          status?: string
           title?: string | null
           type?: string
           updated_at?: string
           url?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "story_pages_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "story_chapters"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {

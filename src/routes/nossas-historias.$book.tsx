@@ -2,10 +2,11 @@ import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ChevronLeft, ChevronRight, ArrowLeft, Plus, Trash2, Upload, Loader2,
-  Settings, X, ListOrdered, Maximize2, Minimize2, ZoomIn, ZoomOut, BookOpen,
+  Settings, X, ListOrdered, Maximize2, Minimize2, ZoomIn, ZoomOut, BookOpen, ListTree,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { StructurePanel } from "@/components/book/StructurePanel";
 
 export const Route = createFileRoute("/nossas-historias/$book")({
   ssr: false,
@@ -87,6 +88,7 @@ function BookViewer() {
   const [showSettings, setShowSettings] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [showPrefs, setShowPrefs] = useState(false);
+  const [showStructure, setShowStructure] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [prefs, setPrefs] = useState<Prefs>(DEFAULT_PREFS);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -247,7 +249,10 @@ function BookViewer() {
             <IconBtn onClick={() => setShowPrefs(true)} title="Preferências de leitura"><BookOpen className="h-4 w-4" /></IconBtn>
             <IconBtn onClick={toggleFullscreen} title="Tela cheia">{fullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}</IconBtn>
             {isAdmin && (
-              <IconBtn onClick={() => setShowSettings(true)} title="Configurações do livro"><Settings className="h-4 w-4" /></IconBtn>
+              <>
+                <IconBtn onClick={() => setShowStructure(true)} title="Estrutura (capítulos e ordem)"><ListTree className="h-4 w-4" /></IconBtn>
+                <IconBtn onClick={() => setShowSettings(true)} title="Configurações do livro"><Settings className="h-4 w-4" /></IconBtn>
+              </>
             )}
             {prefs.showNumbers && (
               <div className="hidden md:block ml-2 w-20 text-right text-xs text-white/70">
@@ -366,6 +371,9 @@ function BookViewer() {
       )}
       {showSettings && bookRow && isAdmin && (
         <BookSettingsModal book={bookRow} onClose={() => setShowSettings(false)} onSaved={async () => { await load(); }} />
+      )}
+      {showStructure && isAdmin && (
+        <StructurePanel book={book} onClose={() => setShowStructure(false)} onChanged={async () => { await load(); }} />
       )}
     </div>
   );
