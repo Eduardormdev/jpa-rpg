@@ -413,10 +413,11 @@ function PagePanel({
           {isAdmin && (
             <button
               onClick={onRemove}
-              className="absolute top-2 right-2 grid h-8 w-8 place-items-center rounded-full bg-destructive/90 text-destructive-foreground opacity-0 hover:opacity-100 group-hover:opacity-100 transition-opacity"
+              className="absolute top-2 right-2 z-20 grid h-10 w-10 place-items-center rounded-full bg-white text-red-600 border-2 border-red-600 shadow-lg ring-2 ring-white/80 hover:bg-red-600 hover:text-white transition-colors"
               title="Remover folha"
+              aria-label="Remover folha"
             >
-              <Trash2 className="h-4 w-4" />
+              <Trash2 className="h-5 w-5" strokeWidth={2.5} />
             </button>
           )}
         </>
