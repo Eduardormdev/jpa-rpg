@@ -322,10 +322,11 @@ function BookViewer() {
                 <button
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading}
-                  className="absolute bottom-3 right-3 z-10 grid h-12 w-12 place-items-center rounded-full bg-accent text-primary-foreground shadow-glow hover:opacity-90 disabled:opacity-50"
+                  className="absolute bottom-3 right-3 z-20 grid h-14 w-14 place-items-center rounded-full bg-emerald-500 text-white border-2 border-white shadow-2xl ring-2 ring-emerald-700/40 hover:bg-emerald-600 disabled:opacity-50"
                   title="Adicionar nova folha"
+                  aria-label="Adicionar nova folha"
                 >
-                  {uploading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-6 w-6" />}
+                  {uploading ? <Loader2 className="h-6 w-6 animate-spin" /> : <Plus className="h-7 w-7" strokeWidth={3} />}
                 </button>
               )}
             </div>
