@@ -372,6 +372,9 @@ function BookViewer() {
       {showSettings && bookRow && isAdmin && (
         <BookSettingsModal book={bookRow} onClose={() => setShowSettings(false)} onSaved={async () => { await load(); }} />
       )}
+      {showStructure && isAdmin && (
+        <StructurePanel book={book} onClose={() => setShowStructure(false)} onChanged={async () => { await load(); }} />
+      )}
     </div>
   );
 }
