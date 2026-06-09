@@ -88,6 +88,7 @@ function BookViewer() {
   const [showSettings, setShowSettings] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [showPrefs, setShowPrefs] = useState(false);
+  const [showStructure, setShowStructure] = useState(false);
   const [fullscreen, setFullscreen] = useState(false);
   const [prefs, setPrefs] = useState<Prefs>(DEFAULT_PREFS);
   const fileRef = useRef<HTMLInputElement>(null);
