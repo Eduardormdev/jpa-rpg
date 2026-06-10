@@ -53,9 +53,9 @@ function FichasPage() {
       template_id: tpl?.id ?? null,
       title: tpl ? `${tpl.name} — sem nome` : "Nova ficha",
       system: tpl?.system ?? "generico",
-      layout: tpl?.layout ?? DEFAULT_LAYOUT,
-      values: {},
-      theme: {},
+      layout: (tpl?.layout ?? DEFAULT_LAYOUT) as never,
+      values: {} as never,
+      theme: {} as never,
     };
     const { data, error } = await supabase.from("character_sheets").insert(payload).select("id").single();
     if (error) { toast.error(error.message); return; }
