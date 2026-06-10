@@ -1,159 +1,112 @@
+# Fichas Modulares — Plano
 
-# Plano — Editor avançado de livros "Nossas Histórias"
+## Objetivo
+Adicionar item **"Fichas"** no header (entre Novidades e Histórias) e criar uma área onde usuários autenticados montem fichas de personagem modulares a partir de templates, com um editor visual estilo Canva (arrastar blocos, redimensionar, configurar).
 
-Objetivo: evoluir o visualizador atual em `src/routes/nossas-historias.$book.tsx` para um editor/leitor estilo grimório premium, sem quebrar o que já funciona (modos single/double/scroll, temas, sumário, prefs, upload por admin).
+## Navegação e rotas
 
-A entrega é dividida em **6 fases incrementais**. Cada fase é shippable sozinha — você aprova/itera antes de partirmos para a próxima.
+- `SiteHeader.tsx`: adicionar link **Fichas** → `/fichas` (entre Novidades e Histórias).
+- Rotas TanStack (todas dentro de `_authenticated` exceto a galeria pública de templates oficiais):
+  - `fichas.index.tsx` → lista de fichas do usuário + botão "Nova ficha" + galeria de templates.
+  - `fichas.templates.tsx` → galeria de templates (D&D 5e, Tormenta, Call of Cthulhu, Genérico, Em branco, etc.).
+  - `_authenticated.fichas.$sheetId.tsx` → **editor** (canvas modular).
+  - `_authenticated.fichas.$sheetId.view.tsx` → modo leitura/jogo (read-only, otimizado para mesa).
+  - `fichas.publica.$slug.tsx` → ficha pública compartilhável (read-only, se o dono marcar como pública).
 
----
+## Modelo de dados (Lovable Cloud)
 
-## Fase 0 — Correções rápidas (entrega imediata)
+Tabelas novas em `public`:
 
-- Trocar o ícone de "deletar página" de `bg-destructive/90` (fica camuflado no canto da página) para um botão com **fundo branco semi-opaco + ícone vermelho forte + borda + sombra**, sempre visível para admin (não esconder atrás de hover).
-- Aumentar o `size` do ícone e o `z-index` para não ser coberto pelo conteúdo da página.
-- Idem para o botão (+) flutuante: garantir contraste sobre temas claros/pergaminho.
+- **`sheet_templates`** — modelos oficiais e da comunidade.
+  - `name`, `system` (dnd5e, tormenta20, coc, generico, custom), `description`, `cover_url`, `schema jsonb` (definição de blocos + layout padrão), `is_official bool`, `created_by uuid`, `is_public bool`.
+- **`character_sheets`** — fichas dos usuários.
+  - `owner_id uuid` (auth.users), `template_id uuid null`, `title`, `system`, `cover_url`, `layout jsonb` (array de blocos posicionados), `values jsonb` (valores dos campos), `theme jsonb` (cores/fonte/fundo), `is_public bool`, `public_slug text unique null`, `updated_at`.
+- **`sheet_versions`** (opcional fase 2) — snapshots para histórico.
 
-Estimativa: 1 edição em `nossas-historias.$book.tsx`.
+RLS:
+- `character_sheets`: owner faz tudo; SELECT público quando `is_public = true`; admin tudo.
+- `sheet_templates`: SELECT para todos quando `is_official OR is_public`; INSERT/UPDATE/DELETE só dono ou admin.
+- GRANTs padrão (`authenticated` full, `service_role` all, `anon` SELECT apenas onde há policy pública).
 
----
+## Editor modular (estilo Canva)
 
-## Fase 1 — Estrutura do livro (capítulos + drag & drop)
+Tecnologias:
+- **`@dnd-kit`** (já instalado) para arrastar blocos da paleta para o canvas e reordenar.
+- **Grid livre 12 colunas** com snapping; cada bloco tem `{id, type, x, y, w, h, props, bind}`.
+- Resize por handles (componente leve próprio, sem nova dependência pesada).
+- Auto-save (debounce 800ms) via server function.
 
-Modelo de dados:
+Tipos de bloco iniciais:
+- **Texto/título** (rich text simples).
+- **Campo** (label + input: texto, número, textarea).
+- **Atributo** (ex.: FOR 14 / +2) com cálculo de modificador.
+- **Barra** (HP/Mana/Stress — valor atual/máximo, cor).
+- **Lista** (inventário, magias, habilidades — itens dinâmicos).
+- **Dados** (botão de rolagem `1d20+mod`, mostra resultado).
+- **Imagem** (avatar do personagem, upload para bucket `sheet-assets`).
+- **Divisor / Seção** (agrupador colapsável).
+- **Tabela** (perícias, ataques).
+- **Checkbox grupo** (proficiências, traços).
+- **Notas** (área livre markdown).
 
-- Nova tabela `story_chapters` (book, position, title, parent_id nullable p/ subcapítulos, kind: "volume" | "arco" | "capitulo" | "secao").
-- `story_pages` ganha: `chapter_id` (fk nullable), `status` ("draft" | "review" | "published"), `is_locked` (bool), `slug` opcional p/ links internos.
-- Tabela `story_page_versions` (page_id, snapshot jsonb, created_by, created_at) para histórico/restaurar.
+Painéis do editor:
+- **Esquerda**: paleta de blocos + camadas (lista de blocos com drag-to-reorder).
+- **Centro**: canvas com zoom, grade, fundo configurável (cor, textura, imagem).
+- **Direita**: inspector do bloco selecionado (props, binding com campo, estilos, cor, fonte).
+- **Topo**: título, sistema, salvar/desfazer/refazer, alternar **Editar ↔ Jogar**, exportar PDF/PNG, compartilhar.
 
-UI no painel admin do livro:
-- Coluna lateral "Estrutura" com árvore: Volume → Capítulo → Seção → Página.
-- Botões: criar/editar/excluir/duplicar página, criar capítulo, criar subcapítulo, agrupar em volume/arco.
-- Drag-and-drop com `@dnd-kit/sortable` (já comum no stack) para reordenar páginas e capítulos.
-- "Salvar como nova versão" — cria registro em `story_page_versions`.
+Temas/presets visuais: grimório, pergaminho, sombrio, arcano, neon, minimal (mesmos presets do livro, reutilizados via tokens em `styles.css`).
 
-Leitura:
-- Navegação respeita capítulos (próximo capítulo / capítulo anterior).
+## Templates iniciais (seed)
+- **Em branco** (canvas vazio).
+- **Genérico RPG** (nome, classe, nível, atributos, HP, inventário, notas).
+- **D&D 5e simplificado** (6 atributos + perícias + ataques + magias).
+- **Tormenta 20 básico**.
+- **One-page mini** (ficha rápida para one-shots).
 
----
+Seed via migration (INSERT em `sheet_templates` com `is_official=true`).
 
-## Fase 2 — Índice inteligente
+## Server functions (`src/lib/sheets.functions.ts`)
+- `listMySheets`, `getSheet(id)`, `createSheet({templateId?, title})`, `updateSheet(id, patch)` (layout/values/theme/title), `duplicateSheet(id)`, `deleteSheet(id)`, `togglePublic(id, bool)` → gera `public_slug`.
+- `listTemplates({system?})`, `getTemplate(id)`, `saveAsTemplate(sheetId, {name, isPublic})`.
+- Todas com `requireSupabaseAuth` exceto `getPublicSheet(slug)` e `listTemplates` (público para oficiais).
 
-- **Índice automático** gerado da árvore de capítulos + títulos das páginas.
-- **Índice manual** sobrepõe a ordem automática quando admin edita.
-- Hierarquia visual no sumário (indentação capítulo > seção > página).
-- **Favoritar página** (persistido em `localStorage` por usuário não-logado; em tabela `user_bookmarks` para logado).
-- Campo de **busca** (título + tags + categoria) com `useDeferredValue`.
-- Sumário lateral recolhível (sheet à esquerda) com **progresso de leitura por capítulo** (% baseado em `book-pos`).
-- Pulo direto: clicar na entrada do sumário chama `jumpTo(i)` (já existe).
+## Storage
+- Bucket novo **`sheet-assets`** (público para leitura) — avatares, imagens de fundo, ícones customizados de bloco.
 
----
+## Export
+- **PNG**: `html-to-image` (dependência leve a adicionar) sobre o canvas.
+- **PDF**: `jspdf` + a imagem PNG (uma página A4).
+- Botão "Imprimir" usa `window.print()` com CSS print-friendly como fallback.
 
-## Fase 3 — Moldura, background e composição visual
+## Modo "Jogar"
+- Esconde paleta/inspector, mostra apenas o canvas com inputs editáveis e botões de rolagem.
+- Toolbar flutuante: rolar dados, alternar tema, tela cheia.
 
-Schema:
-- `story_books` ganha `style_preset` ("grimorio" | "pergaminho" | "sombrio" | "arcano" | "neon" | "custom") + `style_overrides` jsonb.
-- `story_pages` ganha `style_overrides` jsonb opcional (override por página).
+## Fases
 
-Controles (modal "Estilo do livro" e por página):
+1. **Fase A — Esqueleto**: link no header, rota `/fichas` (lista vazia), migration de tabelas + RLS + GRANTs, server functions CRUD básicas, criação a partir de template "em branco".
+2. **Fase B — Editor v1**: canvas com grid, paleta com 5 blocos essenciais (texto, campo, atributo, barra, notas), drag/drop, resize, inspector, auto-save, modo Jogar.
+3. **Fase C — Templates oficiais**: seed dos 4 templates + galeria visual em `/fichas/templates`.
+4. **Fase D — Blocos avançados**: dados/rolagem, lista, tabela, imagem (upload), checkboxes, divisor.
+5. **Fase E — Compartilhar/Exportar**: ficha pública por slug, export PNG/PDF, duplicar, salvar como template, presets visuais.
 
-**Moldura**
-- Presets prontos (runas, pergaminho, metal, vidro, neon).
-- Cantos decorativos via SVG bundled em `src/assets/frames/`.
-- Espessura, cor, sombra, brilho ajustáveis.
-- Liga/desliga moldura por tipo de página (capa, sumário, conteúdo, encerramento).
+## Detalhes técnicos relevantes
 
-**Background**
-- Sólido, gradiente, textura de papel (imagens em `src/assets/textures/`), upload de imagem custom, fundo animado (CSS keyframes: estrelas, fumaça).
-- Por capítulo / por categoria.
-- Opacidade + desfoque + overlay de padrão (mapa, runas, amuleto).
+- **Schema `layout jsonb`**:
+  ```ts
+  type Block = { id: string; type: BlockType; x: number; y: number; w: number; h: number; props: Record<string, unknown>; bind?: string }
+  type Layout = { version: 1; grid: { cols: 12; rowHeight: number }; blocks: Block[]; background?: { color?: string; image?: string; preset?: string } }
+  ```
+- **`values jsonb`** indexado por `bind` (ex.: `{ "atr.for": 14, "hp.current": 22 }`) para separar definição visual de dados, permitindo trocar template sem perder valores compatíveis.
+- Editor isolado em `src/components/sheet/` (`SheetEditor`, `BlockPalette`, `Canvas`, `Inspector`, `blocks/*`).
+- `ssr: false` na rota do editor (TanStack) — é client-only pesado, igual ao livro.
+- Reutilizar presets visuais já criados em `nossas-historias.$book.tsx` movendo-os para `src/lib/visual-presets.ts`.
 
-**Composição**
-- Layouts: 1 coluna, 2 colunas, imagem topo/lateral/fundo.
-- Blocos: citação, nota, alerta, dica, missão (componentes React reaproveitáveis).
-- Largura ideal de leitura (`max-w-[65ch]` etc.) configurável.
+## Fora de escopo (por enquanto)
+- Colaboração em tempo real (multi-cursor).
+- Marketplace pago de templates.
+- Importação de fichas externas (Roll20/D&D Beyond).
+- Macros/scripting complexo de regras por sistema.
 
----
-
-## Fase 4 — Editor de conteúdo (blocos) + assets
-
-- Trocar upload "PDF/imagem puro" por um **editor por blocos** (TipTap) com nodes customizados: texto, imagem, caixa mágica, citação, separador rúnico, bloco de missão, link interno entre páginas.
-- Upload mantém-se para PDF/imagem como tipo de página alternativo.
-- **Galeria de assets do projeto**: bucket `book-assets` reaproveitável entre livros (personagens, mapas, itens, cenas) com tags.
-- Metadados por página: autor, data, tags, descrição curta/longa.
-- **Preview em tempo real**: split view (editor à esquerda, página renderizada à direita, exatamente como o leitor verá).
-
----
-
-## Fase 5 — Publicação, controle e "livro vivo"
-
-Publicação:
-- Status `draft` / `review` / `published` (já no schema da Fase 1).
-- Agendamento (`publish_at` timestamp + cron via `/api/public/cron/publish-pages`).
-- Aprovação: admin marca "review", outro admin aprova → vira `published`.
-- Páginas com `is_locked` exibem placeholder p/ usuário comum.
-- Histórico de edições + **comparar versões lado a lado** (diff de blocos).
-
-Livro vivo:
-- Links internos `[[slug-da-pagina]]` resolvidos no render.
-- Escolhas interativas (bloco "escolha" que aponta p/ outras páginas — base p/ aventuras ramificadas).
-- Páginas secretas (`unlock_condition` jsonb — ex: ter visitado X páginas).
-- Trilha de leitura automática e sistema de progresso (já parcial na Fase 2).
-- Comentários internos da equipe (tabela `story_page_comments`, visível só para admin).
-
----
-
-## Detalhes técnicos
-
-```text
-src/routes/nossas-historias.$book.tsx        (refatorado, vira shell)
-src/components/book/
-  ├─ BookShell.tsx
-  ├─ BookHeader.tsx
-  ├─ reader/
-  │   ├─ PageRenderer.tsx       (lê blocks ou PDF/imagem)
-  │   ├─ Frame.tsx              (moldura SVG por preset)
-  │   ├─ Background.tsx
-  │   └─ blocks/                (Quote, Note, Mission, Choice, …)
-  ├─ editor/
-  │   ├─ BlockEditor.tsx        (TipTap)
-  │   ├─ StructurePanel.tsx     (árvore drag-and-drop)
-  │   ├─ StylePanel.tsx
-  │   ├─ AssetGallery.tsx
-  │   └─ VersionDiff.tsx
-  └─ summary/
-      ├─ SummarySheet.tsx       (lateral recolhível)
-      └─ SearchBox.tsx
-src/lib/book/
-  ├─ book.functions.ts          (server fns: createChapter, reorderPages, …)
-  ├─ versions.functions.ts
-  └─ publish.functions.ts       (agendamento + cron)
-src/routes/api/public/cron/publish-pages.ts
-```
-
-Dependências novas:
-- `@dnd-kit/core`, `@dnd-kit/sortable` (drag-and-drop)
-- `@tiptap/react`, `@tiptap/starter-kit`, `@tiptap/extension-image` (editor por blocos)
-- nenhuma lib pesada de "page flip" — mantemos a animação CSS atual
-
-Migrações de DB ocorrem **uma por fase** (1, 3, 5) com GRANTs corretos e RLS apenas-admin para escrita.
-
----
-
-## Ordem proposta de entrega (cada item = 1 turno)
-
-1. **Fase 0** — fix do ícone deletar + (+) admin
-2. **Fase 1** — schema + estrutura/drag-drop
-3. **Fase 2** — sumário lateral + busca + favoritos + progresso
-4. **Fase 3** — molduras, backgrounds, presets visuais
-5. **Fase 4** — editor por blocos + assets + preview em tempo real
-6. **Fase 5** — publicação, versões, livro vivo
-
----
-
-## Decisões que preciso confirmar antes da Fase 1
-
-1. **Editor de blocos**: posso usar TipTap (React, MIT, bem mantido) ou prefere outro?
-2. **Drag-and-drop**: `@dnd-kit` ok?
-3. **Assets de moldura/textura**: gero via `imagegen` ou prefere subir manualmente?
-4. **Páginas existentes (PDF/imagem)**: mantemos esse tipo "puro" como uma alternativa ao editor de blocos? (recomendo manter)
-5. Posso começar pela **Fase 0 agora mesmo** enquanto você revisa o plano?
+Confirma para eu começar pela **Fase A**? Posso já enfileirar a migration junto.
