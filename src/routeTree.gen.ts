@@ -15,13 +15,16 @@ import { Route as PoliticaDePrivacidadeRouteImport } from './routes/politica-de-
 import { Route as NovidadesRouteImport } from './routes/novidades'
 import { Route as NossasHistoriasRouteImport } from './routes/nossas-historias'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as FichasRouteImport } from './routes/fichas'
 import { Route as DoeRouteImport } from './routes/doe'
 import { Route as ContatoRouteImport } from './routes/contato'
 import { Route as ContaRouteImport } from './routes/conta'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NossasHistoriasIndexRouteImport } from './routes/nossas-historias.index'
+import { Route as FichasIndexRouteImport } from './routes/fichas.index'
 import { Route as NossasHistoriasBookRouteImport } from './routes/nossas-historias.$book'
+import { Route as FichasSheetIdRouteImport } from './routes/fichas.$sheetId'
 
 const TrabalheConoscoRoute = TrabalheConoscoRouteImport.update({
   id: '/trabalhe-conosco',
@@ -51,6 +54,11 @@ const NossasHistoriasRoute = NossasHistoriasRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FichasRoute = FichasRouteImport.update({
+  id: '/fichas',
+  path: '/fichas',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DoeRoute = DoeRouteImport.update({
@@ -83,10 +91,20 @@ const NossasHistoriasIndexRoute = NossasHistoriasIndexRouteImport.update({
   path: '/',
   getParentRoute: () => NossasHistoriasRoute,
 } as any)
+const FichasIndexRoute = FichasIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => FichasRoute,
+} as any)
 const NossasHistoriasBookRoute = NossasHistoriasBookRouteImport.update({
   id: '/$book',
   path: '/$book',
   getParentRoute: () => NossasHistoriasRoute,
+} as any)
+const FichasSheetIdRoute = FichasSheetIdRouteImport.update({
+  id: '/$sheetId',
+  path: '/$sheetId',
+  getParentRoute: () => FichasRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -95,13 +113,16 @@ export interface FileRoutesByFullPath {
   '/conta': typeof ContaRoute
   '/contato': typeof ContatoRoute
   '/doe': typeof DoeRoute
+  '/fichas': typeof FichasRouteWithChildren
   '/login': typeof LoginRoute
   '/nossas-historias': typeof NossasHistoriasRouteWithChildren
   '/novidades': typeof NovidadesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sobre': typeof SobreRoute
   '/trabalhe-conosco': typeof TrabalheConoscoRoute
+  '/fichas/$sheetId': typeof FichasSheetIdRoute
   '/nossas-historias/$book': typeof NossasHistoriasBookRoute
+  '/fichas/': typeof FichasIndexRoute
   '/nossas-historias/': typeof NossasHistoriasIndexRoute
 }
 export interface FileRoutesByTo {
@@ -115,7 +136,9 @@ export interface FileRoutesByTo {
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sobre': typeof SobreRoute
   '/trabalhe-conosco': typeof TrabalheConoscoRoute
+  '/fichas/$sheetId': typeof FichasSheetIdRoute
   '/nossas-historias/$book': typeof NossasHistoriasBookRoute
+  '/fichas': typeof FichasIndexRoute
   '/nossas-historias': typeof NossasHistoriasIndexRoute
 }
 export interface FileRoutesById {
@@ -125,13 +148,16 @@ export interface FileRoutesById {
   '/conta': typeof ContaRoute
   '/contato': typeof ContatoRoute
   '/doe': typeof DoeRoute
+  '/fichas': typeof FichasRouteWithChildren
   '/login': typeof LoginRoute
   '/nossas-historias': typeof NossasHistoriasRouteWithChildren
   '/novidades': typeof NovidadesRoute
   '/politica-de-privacidade': typeof PoliticaDePrivacidadeRoute
   '/sobre': typeof SobreRoute
   '/trabalhe-conosco': typeof TrabalheConoscoRoute
+  '/fichas/$sheetId': typeof FichasSheetIdRoute
   '/nossas-historias/$book': typeof NossasHistoriasBookRoute
+  '/fichas/': typeof FichasIndexRoute
   '/nossas-historias/': typeof NossasHistoriasIndexRoute
 }
 export interface FileRouteTypes {
@@ -142,13 +168,16 @@ export interface FileRouteTypes {
     | '/conta'
     | '/contato'
     | '/doe'
+    | '/fichas'
     | '/login'
     | '/nossas-historias'
     | '/novidades'
     | '/politica-de-privacidade'
     | '/sobre'
     | '/trabalhe-conosco'
+    | '/fichas/$sheetId'
     | '/nossas-historias/$book'
+    | '/fichas/'
     | '/nossas-historias/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -162,7 +191,9 @@ export interface FileRouteTypes {
     | '/politica-de-privacidade'
     | '/sobre'
     | '/trabalhe-conosco'
+    | '/fichas/$sheetId'
     | '/nossas-historias/$book'
+    | '/fichas'
     | '/nossas-historias'
   id:
     | '__root__'
@@ -171,13 +202,16 @@ export interface FileRouteTypes {
     | '/conta'
     | '/contato'
     | '/doe'
+    | '/fichas'
     | '/login'
     | '/nossas-historias'
     | '/novidades'
     | '/politica-de-privacidade'
     | '/sobre'
     | '/trabalhe-conosco'
+    | '/fichas/$sheetId'
     | '/nossas-historias/$book'
+    | '/fichas/'
     | '/nossas-historias/'
   fileRoutesById: FileRoutesById
 }
@@ -187,6 +221,7 @@ export interface RootRouteChildren {
   ContaRoute: typeof ContaRoute
   ContatoRoute: typeof ContatoRoute
   DoeRoute: typeof DoeRoute
+  FichasRoute: typeof FichasRouteWithChildren
   LoginRoute: typeof LoginRoute
   NossasHistoriasRoute: typeof NossasHistoriasRouteWithChildren
   NovidadesRoute: typeof NovidadesRoute
@@ -239,6 +274,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/fichas': {
+      id: '/fichas'
+      path: '/fichas'
+      fullPath: '/fichas'
+      preLoaderRoute: typeof FichasRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/doe': {
       id: '/doe'
       path: '/doe'
@@ -281,6 +323,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NossasHistoriasIndexRouteImport
       parentRoute: typeof NossasHistoriasRoute
     }
+    '/fichas/': {
+      id: '/fichas/'
+      path: '/'
+      fullPath: '/fichas/'
+      preLoaderRoute: typeof FichasIndexRouteImport
+      parentRoute: typeof FichasRoute
+    }
     '/nossas-historias/$book': {
       id: '/nossas-historias/$book'
       path: '/$book'
@@ -288,8 +337,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NossasHistoriasBookRouteImport
       parentRoute: typeof NossasHistoriasRoute
     }
+    '/fichas/$sheetId': {
+      id: '/fichas/$sheetId'
+      path: '/$sheetId'
+      fullPath: '/fichas/$sheetId'
+      preLoaderRoute: typeof FichasSheetIdRouteImport
+      parentRoute: typeof FichasRoute
+    }
   }
 }
+
+interface FichasRouteChildren {
+  FichasSheetIdRoute: typeof FichasSheetIdRoute
+  FichasIndexRoute: typeof FichasIndexRoute
+}
+
+const FichasRouteChildren: FichasRouteChildren = {
+  FichasSheetIdRoute: FichasSheetIdRoute,
+  FichasIndexRoute: FichasIndexRoute,
+}
+
+const FichasRouteWithChildren =
+  FichasRoute._addFileChildren(FichasRouteChildren)
 
 interface NossasHistoriasRouteChildren {
   NossasHistoriasBookRoute: typeof NossasHistoriasBookRoute
@@ -311,6 +380,7 @@ const rootRouteChildren: RootRouteChildren = {
   ContaRoute: ContaRoute,
   ContatoRoute: ContatoRoute,
   DoeRoute: DoeRoute,
+  FichasRoute: FichasRouteWithChildren,
   LoginRoute: LoginRoute,
   NossasHistoriasRoute: NossasHistoriasRouteWithChildren,
   NovidadesRoute: NovidadesRoute,
@@ -321,13 +391,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
