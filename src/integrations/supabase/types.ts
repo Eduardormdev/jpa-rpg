@@ -14,6 +14,62 @@ export type Database = {
   }
   public: {
     Tables: {
+      character_sheets: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          id: string
+          is_public: boolean
+          layout: Json
+          owner_id: string
+          public_slug: string | null
+          system: string
+          template_id: string | null
+          theme: Json
+          title: string
+          updated_at: string
+          values: Json
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          layout?: Json
+          owner_id: string
+          public_slug?: string | null
+          system?: string
+          template_id?: string | null
+          theme?: Json
+          title?: string
+          updated_at?: string
+          values?: Json
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          layout?: Json
+          owner_id?: string
+          public_slug?: string | null
+          system?: string
+          template_id?: string | null
+          theme?: Json
+          title?: string
+          updated_at?: string
+          values?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "character_sheets_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "sheet_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contact_messages: {
         Row: {
           created_at: string
@@ -89,6 +145,54 @@ export type Database = {
           email?: string
           id?: string
           name?: string | null
+        }
+        Relationships: []
+      }
+      sheet_templates: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          created_by: string | null
+          default_values: Json
+          description: string | null
+          id: string
+          is_official: boolean
+          is_public: boolean
+          layout: Json
+          name: string
+          system: string
+          theme: Json
+          updated_at: string
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          default_values?: Json
+          description?: string | null
+          id?: string
+          is_official?: boolean
+          is_public?: boolean
+          layout?: Json
+          name: string
+          system?: string
+          theme?: Json
+          updated_at?: string
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          created_by?: string | null
+          default_values?: Json
+          description?: string | null
+          id?: string
+          is_official?: boolean
+          is_public?: boolean
+          layout?: Json
+          name?: string
+          system?: string
+          theme?: Json
+          updated_at?: string
         }
         Relationships: []
       }
