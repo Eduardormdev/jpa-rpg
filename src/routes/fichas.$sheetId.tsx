@@ -61,7 +61,7 @@ function SheetEditorPage() {
     if (!dirtyRef.current) return;
     const t = setTimeout(async () => {
       setSaving(true);
-      const { error } = await supabase.from("character_sheets").update({ title, system, layout, values, theme }).eq("id", sheetId);
+      const { error } = await supabase.from("character_sheets").update({ title, system, layout: layout as never, values: values as never, theme: theme as never }).eq("id", sheetId);
       setSaving(false);
       if (error) toast.error("Falha ao salvar: " + error.message); else dirtyRef.current = false;
     }, 900);
@@ -205,7 +205,7 @@ function SheetEditorPage() {
             <button
               onClick={async () => {
                 setSaving(true);
-                const { error } = await supabase.from("character_sheets").update({ title, system, layout, values, theme }).eq("id", sheetId);
+                const { error } = await supabase.from("character_sheets").update({ title, system, layout: layout as never, values: values as never, theme: theme as never }).eq("id", sheetId);
                 setSaving(false);
                 if (error) toast.error(error.message); else { dirtyRef.current = false; toast.success("Ficha salva."); }
               }}
